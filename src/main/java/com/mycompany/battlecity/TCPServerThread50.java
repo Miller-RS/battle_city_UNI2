@@ -161,7 +161,14 @@ public class TCPServerThread50 extends Thread{
                        System.out.println("bandera 2");
                        out = new PrintWriter(secuenciaDeSalida,true);
                        System.out.println("bandera 3");
-                       out.println(palabras[0]+" "+palabras[1]+" "+palabras[2]);
+                       
+                       for(int v = 0; v < campo.length; v++) {
+                            for(int w = 0; w < campo[i].length; w++) {
+                            out.println(campo[v][w]);
+                            }
+                        }
+               
+                       //out.println(palabras[0]+" "+palabras[1]+" "+palabras[2]);
                        System.out.println("bandera 4");
                     }
                     
