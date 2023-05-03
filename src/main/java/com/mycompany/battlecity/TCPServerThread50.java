@@ -121,7 +121,23 @@ public class TCPServerThread50 extends Thread{
                 while(running){
                     
                      String mensaje = in.readLine();
+                     System.out.println("mensaje enviado:  "+mensaje);
                      String[] palabras = mensaje.split(" ");
+                     
+                     System.out.println("length de palabras: "+ palabras.length);
+                     if(palabras.length == 5){
+                       
+                          int i = Integer.parseInt(palabras[0]);
+                          int j = Integer.parseInt(palabras[1]);
+                          
+                          campo[i][j]=palabras[2];
+                          
+                          int h = Integer.parseInt(palabras[3]);
+                          int g = Integer.parseInt(palabras[4]);
+                          
+                          campo[h][g]=" ";
+                     }else{
+                    
                      int i = Integer.parseInt(palabras[0]);
                      int j = Integer.parseInt(palabras[1]);
 
@@ -130,10 +146,10 @@ public class TCPServerThread50 extends Thread{
                      
                      campo[i][j]=palabras[2];
                      
+                     } 
                      
                      
-                     
-                     System.out.println(campo[i][j]);
+                     //System.out.println(campo[i][j]);
     
               
                            
@@ -163,7 +179,7 @@ public class TCPServerThread50 extends Thread{
                        System.out.println("bandera 3");
                        
                        for(int v = 0; v < campo.length; v++) {
-                            for(int w = 0; w < campo[i].length; w++) {
+                            for(int w = 0; w < campo[v].length; w++) {
                             out.println(campo[v][w]);
                             }
                         }

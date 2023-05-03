@@ -219,7 +219,19 @@ public class window extends javax.swing.JFrame {
     
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        
+       int rowAntiguo, ColumnAntiguo; 
+       mapa[row][Column]= " ";
+       rowAntiguo = row;
+       ColumnAntiguo = Column;
+       Column = Column -1;
+       mapa[row][Column]= "<";
+       
+       
+       manejador.sendMessage(Integer.toString(row)+" "+Integer.toString(Column)+" "+mapa[row][Column]+ 
+               " "+Integer.toString(rowAntiguo)+" "+Integer.toString(ColumnAntiguo)+" "+mapa[rowAntiguo][ColumnAntiguo]);
+      // manejador.sendMessage(Integer.toString(rowAntiguo)+" "+Integer.toString(ColumnAntiguo)+" "+mapa[rowAntiguo][ColumnAntiguo]);
+       
+         
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
