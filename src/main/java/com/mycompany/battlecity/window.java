@@ -3,11 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.mycompany.battlecity;
+
+import static com.mycompany.battlecity.TCPClient50.SERVERPORT;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.String;
+import java.net.Socket;
 import java.util.Random;
 import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,8 +28,11 @@ public class window extends javax.swing.JFrame {
     public boolean condicionDeConexion = false;
     AtomicBoolean buttonClicked = new AtomicBoolean(false);
     TCPClient50 manejador;
+    public BufferedReader in;
+
     /**
      * Creates new form window
+     *
      * @param mapa
      * @param manage
      */
@@ -29,9 +40,9 @@ public class window extends javax.swing.JFrame {
         this.mapa = mapa;
         this.manejador = manage;
         initComponents();
-        
+
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -52,6 +63,7 @@ public class window extends javax.swing.JFrame {
         jButton5 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("value_IP"); // NOI18N
@@ -73,6 +85,11 @@ public class window extends javax.swing.JFrame {
         jButton2.setText("^");
         jButton2.setActionCommand("flechaArriba");
         jButton2.setName("flecha_Arriba"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("<");
         jButton3.setActionCommand("flechaIzquierda");
@@ -86,15 +103,32 @@ public class window extends javax.swing.JFrame {
         jButton4.setText(">");
         jButton4.setActionCommand("flechaDerecha");
         jButton4.setName("felcha_derecha"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("v");
         jButton5.setActionCommand("flechaBaja");
         jButton5.setName("flecha_Baja"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
+
+        jButton6.setText("0");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -114,17 +148,17 @@ public class window extends javax.swing.JFrame {
                         .addGap(75, 75, 75)
                         .addComponent(jButton1))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButton3)
-                        .addGap(72, 72, 72)
-                        .addComponent(jButton4))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton2)
-                            .addComponent(jButton5))
-                        .addGap(45, 45, 45)))
+                        .addGap(31, 31, 31)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(23, 23, 23)
+                .addComponent(jButton4)
                 .addGap(38, 38, 38))
         );
         layout.setVerticalGroup(
@@ -144,7 +178,8 @@ public class window extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton3)
-                            .addComponent(jButton4))
+                            .addComponent(jButton4)
+                            .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jButton5))
                     .addGroup(layout.createSequentialGroup()
@@ -163,82 +198,190 @@ public class window extends javax.swing.JFrame {
     public void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
         boolean search = true;
-        
-        
 
         //Generar posicion aleatoria del tanque 
-        while(search){
-                Random rand = new Random();
-                 Column = rand.nextInt(29);
-                 row = rand.nextInt(13);
-                
-                if(mapa[row][Column].equals(" ")){
-                    mapa[row][Column] = ">";
-                    condicionDeConexion =  true;
-                    System.out.println(condicionDeConexion);
-                    buttonClicked.set(true);
-                    search = false;
-                    
-                    System.out.println("row y Column"+row+" "+Column);
-                    
-                }
-                
+        while (search) {
+            Random rand = new Random();
+            Column = rand.nextInt(29);
+            row = rand.nextInt(13);
+
+            if (mapa[row][Column].equals(" ")) {
+                mapa[row][Column] = ">";
+                condicionDeConexion = true;
+                System.out.println(condicionDeConexion);
+                buttonClicked.set(true);
+                search = false;
+
+                System.out.println("row y Column" + row + " " + Column);
+
+            }
+
         }
-        
+
         //pasar la matrix al jTextArea de la GUI
         StringJoiner joiner = new StringJoiner("");
-        for(int i = 0; i < 13; i++) {
-            for(int j = 0; j < 29; j++) {
+        for (int i = 0; i < 13; i++) {
+            for (int j = 0; j < 29; j++) {
                 //jTextArea1.setText(mapa[i][j] + " ");
-                
-                joiner.add(mapa[i][j]+ " ");
+
+                joiner.add(mapa[i][j] + " ");
                 //columns = jTextArea1.getColumns();
                 //rows = jTextArea1.getRows();
-                
-                
+
             }
             //jTextArea1.setText("\n");
-            
+
             joiner.add("\n");
         }
-        
+
         //jTextArea1.setVisible(true);
         jTextArea1.setText(joiner.toString());
- 
+
         //for (int i = 0; i < 13; i++) {
-          //  for (int j = 0; j < 29; j++) {
-                manejador.sendMessage(Integer.toString(row)+" "+Integer.toString(Column)+" "+mapa[row][Column]);
-                
-               //2 10 >
-            //}
+        //  for (int j = 0; j < 29; j++) {
+        manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
+
+        //2 10 >
         //}
-                
-        System.out.println("Columnas: "+jTextArea1.getColumns()+ " Filas: "+jTextArea1.getRows());        
+        //}
+        System.out.println("Columnas: " + jTextArea1.getColumns() + " Filas: " + jTextArea1.getRows());
     }
 
-    
+    //boton izquierda
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-       int rowAntiguo, ColumnAntiguo; 
-       mapa[row][Column]= " ";
-       rowAntiguo = row;
-       ColumnAntiguo = Column;
-       Column = Column -1;
-       mapa[row][Column]= "<";
-       
-       
-       manejador.sendMessage(Integer.toString(row)+" "+Integer.toString(Column)+" "+mapa[row][Column]+ 
-               " "+Integer.toString(rowAntiguo)+" "+Integer.toString(ColumnAntiguo)+" "+mapa[rowAntiguo][ColumnAntiguo]);
-      // manejador.sendMessage(Integer.toString(rowAntiguo)+" "+Integer.toString(ColumnAntiguo)+" "+mapa[rowAntiguo][ColumnAntiguo]);
-       
-         
+        int rowAntiguo, ColumnAntiguo;
+
+        if (mapa[row][Column - 1].equals(" ")) {
+            mapa[row][Column] = " ";
+            rowAntiguo = row;
+            ColumnAntiguo = Column;
+            Column = Column - 1;
+            mapa[row][Column] = "<";
+            manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]
+                    + " " + Integer.toString(rowAntiguo) + " " + Integer.toString(ColumnAntiguo) + " " + mapa[rowAntiguo][ColumnAntiguo]);
+
+        }
+
+        // manejador.sendMessage(Integer.toString(rowAntiguo)+" "+Integer.toString(ColumnAntiguo)+" "+mapa[rowAntiguo][ColumnAntiguo]);
+
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    //boton arriba
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+
+        int rowAntiguo, ColumnAntiguo;
+
+        if (mapa[row - 1][Column].equals(" ")) {
+            mapa[row][Column] = " ";
+            rowAntiguo = row;
+            ColumnAntiguo = Column;
+            row = row - 1;
+            mapa[row][Column] = "^";
+            manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]
+                    + " " + Integer.toString(rowAntiguo) + " " + Integer.toString(ColumnAntiguo) + " " + mapa[rowAntiguo][ColumnAntiguo]);
+        }
+
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    //boton derecha
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        int rowAntiguo, ColumnAntiguo;
+
+        if (mapa[row][Column + 1].equals(" ")) {
+            mapa[row][Column] = " ";
+            rowAntiguo = row;
+            ColumnAntiguo = Column;
+            Column = Column + 1;
+            mapa[row][Column] = ">";
+            manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]
+                    + " " + Integer.toString(rowAntiguo) + " " + Integer.toString(ColumnAntiguo) + " " + mapa[rowAntiguo][ColumnAntiguo]);
+        }
+
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    //boton abajo
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+
+        int rowAntiguo, ColumnAntiguo;
+
+        if (mapa[row + 1][Column].equals(" ")) {
+            mapa[row][Column] = " ";
+            rowAntiguo = row;
+            ColumnAntiguo = Column;
+            row = row + 1;
+            mapa[row][Column] = "v";
+            manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]
+                    + " " + Integer.toString(rowAntiguo) + " " + Integer.toString(ColumnAntiguo) + " " + mapa[rowAntiguo][ColumnAntiguo]);
+        }
+
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    //BOTON DISPARAR
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        int rowBala, ColumnBala;
+        System.out.println("valor del caracter: " + mapa[row][Column]);
+        if (mapa[row][Column].equals("<") && mapa[row][Column - 1].equals(" ")) {
+            rowBala = row;//tanke position
+            ColumnBala = Column;   //tanke position
+
+            ColumnBala = ColumnBala - 1;
+
+            mapa[rowBala][ColumnBala] = ".";
+
+            manejador.sendMessage(Integer.toString(rowBala) + " " + Integer.toString(ColumnBala) + " " + mapa[rowBala][ColumnBala]);
+            System.out.println("Bandera 1 de disparo");
+
+           /* while (mapa[row][ColumnBala - 1].equals(" ")) {
+                System.out.println("Bandera 2 de disparo");
+                ColumnBala = ColumnBala - 1;
+                mapa[row][ColumnBala] = ".";
+                mapa[row][ColumnBala + 1] = " ";
+                //manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
+                manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(ColumnBala) + " " + mapa[row][ColumnBala]
+                        + " " + Integer.toString(row) + " " + Integer.toString(ColumnBala + 1) + " " + mapa[row][ColumnBala + 1]);
+
+                System.out.println("Bandera 3 de disparo");
+
+                /*for (int i = 0; i < 100000; i++) {
+                    for (int j = 0; j < 100000; j++) {
+
+                        for (int w = 0; w < 100000; w++) {
+
+                        }
+                    }
+                }*/
+
+                // Socket socket = new Socket("192.168.1.7", 4444);
+                //in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                /*while(!in.ready()){
+                System.out.println("Bandera while in.ready() de disparo");
+                }
+                
+                for (int i = 0; i < 100000; i++) {
+                for (int j = 0; j < 100000; j++) {
+                
+                for (int w = 0; w < 100000; w++) {
+                
+                }
+                }
+                }
+                
+                System.out.println("Bandera 4 de disparo");
+                mapa[row][Column] = " ";
+                manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
+                System.out.println("Bandera 5 de disparo");*/
+            //}
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
      */
-   
-  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
@@ -246,6 +389,7 @@ public class window extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -254,11 +398,11 @@ public class window extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
-    public javax.swing.JTextArea getJTextArea(){
+    public javax.swing.JTextArea getJTextArea() {
         return jTextArea1;
     }
 
-    public void setJTextArea(String letter){
+    public void setJTextArea(String letter) {
         jTextArea1.append(letter);
 
     }

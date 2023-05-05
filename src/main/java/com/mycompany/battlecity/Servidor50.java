@@ -35,6 +35,7 @@ public class Servidor50 {
         String salir = "n";
         sc = new Scanner(System.in);
         System.out.println("Servidor bandera 01");
+         System.out.print("cARACTER CENTRADO: "+'\u00B7');
         while( !salir.equals("s")){
             salir = sc.nextLine();
             ServidorEnvia(salir);

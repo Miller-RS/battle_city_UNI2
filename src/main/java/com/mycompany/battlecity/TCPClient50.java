@@ -78,6 +78,7 @@ public class TCPClient50 {
                     for (int i = 0; i < campo.length; i++) {
                         for (int j = 0; j < campo[i].length; j++) {
                             campo[i][j] = in.readLine();
+                            System.out.println("Recibe actualizacion bala");
                         }
                     }
 
@@ -106,7 +107,7 @@ public class TCPClient50 {
                     //jTextArea1.setVisible(true);
 
                     ventana.getJTextArea().setText(joiner.toString());
-
+                    System.out.print("muestra en la Gui balas");
                     //System.out.println(campo[i][j]);
 
                     // }
