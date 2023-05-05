@@ -4,7 +4,7 @@
  */
 package com.mycompany.battlecity;
 
-import static com.mycompany.battlecity.TCPClient50.SERVERPORT;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,6 +12,7 @@ import java.lang.String;
 import java.net.Socket;
 import java.util.Random;
 import java.util.StringJoiner;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -28,7 +29,9 @@ public class window extends javax.swing.JFrame {
     public boolean condicionDeConexion = false;
     AtomicBoolean buttonClicked = new AtomicBoolean(false);
     TCPClient50 manejador;
+    Cliente50 manejador2;
     public BufferedReader in;
+    
 
     /**
      * Creates new form window
@@ -36,9 +39,10 @@ public class window extends javax.swing.JFrame {
      * @param mapa
      * @param manage
      */
-    public window(String[][] mapa, TCPClient50 manage) {
+    public window(String[][] mapa, TCPClient50 manage ) {
         this.mapa = mapa;
         this.manejador = manage;
+        
         initComponents();
 
     }
@@ -140,11 +144,11 @@ public class window extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(64, 64, 64)
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(75, 75, 75)
                         .addComponent(jButton1))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -167,9 +171,9 @@ public class window extends javax.swing.JFrame {
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -195,9 +199,14 @@ public class window extends javax.swing.JFrame {
            jButton1ActionPerformed(evt);
     }//GEN-LAST:event_jButton1ActionPerformed
 */
+    
+    //Boton conectar
     public void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+        
         boolean search = true;
+        
+        
 
         //Generar posicion aleatoria del tanque 
         while (search) {
@@ -333,49 +342,56 @@ public class window extends javax.swing.JFrame {
 
             mapa[rowBala][ColumnBala] = ".";
 
-            manejador.sendMessage(Integer.toString(rowBala) + " " + Integer.toString(ColumnBala) + " " + mapa[rowBala][ColumnBala]);
+           // manejador.sendMessage(Integer.toString(rowBala) + " " + Integer.toString(ColumnBala) + " " + mapa[rowBala][ColumnBala]);
+            manejador.sendMessage(Integer.toString(rowBala) + " " + Integer.toString(ColumnBala) + " " + mapa[rowBala][ColumnBala]
+                    + " " + Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
             System.out.println("Bandera 1 de disparo");
 
-           /* while (mapa[row][ColumnBala - 1].equals(" ")) {
-                System.out.println("Bandera 2 de disparo");
-                ColumnBala = ColumnBala - 1;
-                mapa[row][ColumnBala] = ".";
-                mapa[row][ColumnBala + 1] = " ";
-                //manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
-                manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(ColumnBala) + " " + mapa[row][ColumnBala]
-                        + " " + Integer.toString(row) + " " + Integer.toString(ColumnBala + 1) + " " + mapa[row][ColumnBala + 1]);
+        }
+        
+        if (mapa[row][Column].equals(">") && mapa[row][Column + 1].equals(" ")) {
+            rowBala = row;//tanke position
+            ColumnBala = Column;   //tanke position
 
-                System.out.println("Bandera 3 de disparo");
+            ColumnBala = ColumnBala + 1;
 
-                /*for (int i = 0; i < 100000; i++) {
-                    for (int j = 0; j < 100000; j++) {
+            mapa[rowBala][ColumnBala] = ".";
 
-                        for (int w = 0; w < 100000; w++) {
+           // manejador.sendMessage(Integer.toString(rowBala) + " " + Integer.toString(ColumnBala) + " " + mapa[rowBala][ColumnBala]);
+            manejador.sendMessage(Integer.toString(rowBala) + " " + Integer.toString(ColumnBala) + " " + mapa[rowBala][ColumnBala]
+                    + " " + Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
+            System.out.println("Bandera 1 de disparo");
 
-                        }
-                    }
-                }*/
+        }
+        
+        if (mapa[row][Column].equals("^") && mapa[row-1][Column].equals(" ")) {
+            rowBala = row;//tanke position
+            ColumnBala = Column;   //tanke position
 
-                // Socket socket = new Socket("192.168.1.7", 4444);
-                //in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                /*while(!in.ready()){
-                System.out.println("Bandera while in.ready() de disparo");
-                }
-                
-                for (int i = 0; i < 100000; i++) {
-                for (int j = 0; j < 100000; j++) {
-                
-                for (int w = 0; w < 100000; w++) {
-                
-                }
-                }
-                }
-                
-                System.out.println("Bandera 4 de disparo");
-                mapa[row][Column] = " ";
-                manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
-                System.out.println("Bandera 5 de disparo");*/
-            //}
+            rowBala = rowBala - 1;
+
+            mapa[rowBala][ColumnBala] = ".";
+
+           // manejador.sendMessage(Integer.toString(rowBala) + " " + Integer.toString(ColumnBala) + " " + mapa[rowBala][ColumnBala]);
+            manejador.sendMessage(Integer.toString(rowBala) + " " + Integer.toString(ColumnBala) + " " + mapa[rowBala][ColumnBala]
+                    + " " + Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
+            System.out.println("Bandera 1 de disparo");
+
+        }
+        
+         if (mapa[row][Column].equals("v") && mapa[row+1][Column].equals(" ")) {
+            rowBala = row;//tanke position
+            ColumnBala = Column;   //tanke position
+
+            rowBala = rowBala + 1;
+
+            mapa[rowBala][ColumnBala] = ".";
+
+           // manejador.sendMessage(Integer.toString(rowBala) + " " + Integer.toString(ColumnBala) + " " + mapa[rowBala][ColumnBala]);
+            manejador.sendMessage(Integer.toString(rowBala) + " " + Integer.toString(ColumnBala) + " " + mapa[rowBala][ColumnBala]
+                    + " " + Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
+            System.out.println("Bandera 1 de disparo");
+
         }
     }//GEN-LAST:event_jButton6ActionPerformed
 

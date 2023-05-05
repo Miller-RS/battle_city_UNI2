@@ -14,7 +14,7 @@ public class TCPServer50 {
     public static final int SERVERPORT = 4444;
     private OnMessageReceived messageListener = null;
     private boolean running = false;
-    TCPServerThread50[] sendclis = new TCPServerThread50[3];
+    TCPServerThread50[] sendclis = new TCPServerThread50[5];
     PrintWriter mOut;
     BufferedReader in;
     ServerSocket serverSocket;

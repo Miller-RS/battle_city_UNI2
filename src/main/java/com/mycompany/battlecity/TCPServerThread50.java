@@ -142,22 +142,6 @@ public class TCPServerThread50 extends Thread {
                         String[][] campoCopy = campo;
                         envioActualizacionTankes(campoCopy);
 
-                        /*for (int k = 1; k < cli_amigos.length; k++) {
-                        System.out.println("length amidgos " + cli_amigos.length);
-                        System.out.println("bandera 1");
-                        secuenciaDeSalida = cli_amigos[k].client.getOutputStream();
-                        System.out.println("bandera 2");
-                        out = new PrintWriter(secuenciaDeSalida, true);
-                        System.out.println("bandera 3");
-
-                        for (int v = 0; v < campo.length; v++) {
-                            for (int w = 0; w < campo[v].length; w++) {
-                                out.println(campo[v][w]);
-                            }
-                        }
-
-                        //out.println(palabras[0]+" "+palabras[1]+" "+palabras[2]);
-                        System.out.println("bandera 4");*/
                     } else {
 
                         if (palabras.length == 2) {
@@ -199,27 +183,7 @@ public class TCPServerThread50 extends Thread {
 
                                 envioActualizacionTankes(campoCopy);
 
-                                ////////////////////////////
-                                while (campo[i][j - 1].equals(" ")) {
-                                    System.out.println("Bandera 2 de disparo");
-                                    j = j - 1;
-                                    campo[i][j] = ".";
-                                    campo[i][j + 1] = " ";
-                                    //manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
-                                    campoCopy = campo;
-                                    envioActualizacionTankes(campoCopy);
-                                    for (int f = 0; f < 100000; f++) {
-                                        for (int o = 0; o < 100000; o++) {
-                                            for (int p = 0; p < 10; p++) {
-
-                                            }
-
-                                        }
-                                    }
-                                    System.out.println("Bandera 3 de disparo");
-
-                                }
-                                ///////////////////////////////////
+                                actualizarBalas(campoCopy, i, j, palabras[5]);
                             } else {
                                 int i = Integer.parseInt(palabras[0]);
                                 int j = Integer.parseInt(palabras[1]);
@@ -334,6 +298,108 @@ public class TCPServerThread50 extends Thread {
             System.out.println("bandera 4");
         }
 
+    }
+
+    public void actualizarBalas(String[][] y, int i, int j, String tankeDirection) {
+
+        System.out.println("Direccion tanke: " + tankeDirection);
+        if (tankeDirection.equals("<")) {
+            while (y[i][j - 1].equals(" ")) {
+                System.out.println("Bandera 2 de disparo");
+                j = j - 1;
+                y[i][j] = ".";
+                y[i][j + 1] = " ";
+                //manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
+
+                envioActualizacionTankes(y);
+                try {
+                   
+                    Thread.sleep(1200);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TCPServerThread50.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("Bandera 3 de disparo");
+
+            }
+            y[i][j] = " ";
+
+            envioActualizacionTankes(y);
+        }
+
+        //////////////////////////
+        if (tankeDirection.equals(">")) {
+            while (y[i][j + 1].equals(" ")) {
+                System.out.println("Bandera 2 de disparo");
+                j = j + 1;
+                y[i][j] = ".";
+                y[i][j - 1] = " ";
+                //manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
+
+                envioActualizacionTankes(y);
+                 try {
+                   
+                    Thread.sleep(1200);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TCPServerThread50.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("Bandera 3 de disparo");
+                System.out.println("Bandera 3 de disparo");
+
+            }
+            y[i][j] = " ";
+
+            envioActualizacionTankes(y);
+        }
+
+        //////////////////
+        if (tankeDirection.equals("v")) {
+            while (y[i + 1][j].equals(" ")) {
+                System.out.println("Bandera 2 de disparo");
+                i = i + 1;
+                y[i][j] = ".";
+                y[i - 1][j] = " ";
+                //manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
+
+                envioActualizacionTankes(y);
+                 try {
+                   
+                    Thread.sleep(1200);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TCPServerThread50.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("Bandera 3 de disparo");
+                System.out.println("Bandera 3 de disparo");
+
+            }
+            y[i][j] = " ";
+
+            envioActualizacionTankes(y);
+        }
+
+        ///////////////
+        if (tankeDirection.equals("^")) {
+            while (y[i - 1][j].equals(" ")) {
+                System.out.println("Bandera 2 de disparo");
+                i = i - 1;
+                y[i][j] = ".";
+                y[i + 1][j] = " ";
+                //manejador.sendMessage(Integer.toString(row) + " " + Integer.toString(Column) + " " + mapa[row][Column]);
+
+                envioActualizacionTankes(y);
+                 try {
+                   
+                    Thread.sleep(1200);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TCPServerThread50.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("Bandera 3 de disparo");
+                System.out.println("Bandera 3 de disparo");
+
+            }
+            y[i][j] = " ";
+
+            envioActualizacionTankes(y);
+        }
     }
 
 }

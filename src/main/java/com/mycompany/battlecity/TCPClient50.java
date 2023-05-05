@@ -17,12 +17,13 @@ import java.io.PrintWriter;
 import java.util.StringJoiner;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
+import java.util.concurrent.CountDownLatch;
 
 public class TCPClient50 {
 
     private String servermsj;
     public String SERVERIP;
-    public static final int SERVERPORT = 4444;
+    public int SERVERPORT = 4444;
     private OnMessageReceived mMessageListener = null;
     private boolean mRun = false;
     public String[][] matrixUpdate;//matrix a actualizarse
@@ -54,6 +55,7 @@ public class TCPClient50 {
             InetAddress serverAddr = InetAddress.getByName(SERVERIP);
             System.out.println("TCP Client" + "C: Conectando...");
             Socket socket = new Socket(serverAddr, SERVERPORT);
+
             try {
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
                 System.out.println("TCP Client" + "C: Sent.");
@@ -66,7 +68,6 @@ public class TCPClient50 {
                         campo[i][j] = in.readLine();
                     }
                 }
-
                 window ventana = new window(campo, this);
                 ventana.setVisible(true);
 
@@ -105,7 +106,6 @@ public class TCPClient50 {
                     }
 
                     //jTextArea1.setVisible(true);
-
                     ventana.getJTextArea().setText(joiner.toString());
                     System.out.print("muestra en la Gui balas");
                     //System.out.println(campo[i][j]);

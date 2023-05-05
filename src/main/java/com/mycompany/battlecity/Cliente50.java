@@ -10,6 +10,7 @@ import com.mycompany.battlecity.window;
 class Cliente50 {
     TCPClient50 mTcpClient;
     Scanner sc;
+    
 
     public static void main(String[] args) {
         Cliente50 objcli = new Cliente50();
